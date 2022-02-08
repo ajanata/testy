@@ -5,8 +5,6 @@ import (
 	"runtime"
 	"strings"
 	"sync"
-
-	"github.com/gametimesf/testy/orderedmap"
 )
 
 var regLock sync.Mutex
@@ -34,10 +32,10 @@ func RegisterTest(name string, tester Tester) any {
 	regLock.Lock()
 	defer regLock.Unlock()
 	if instance.tests == nil {
-		instance.tests = make(orderedmap.OrderedMap[string, orderedmap.OrderedMap[string, testCase]])
+		instance.tests = make(allTests)
 	}
 	if instance.tests[pkg] == nil {
-		instance.tests[pkg] = make(orderedmap.OrderedMap[string, testCase])
+		instance.tests[pkg] = make(packageTests)
 	}
 
 	if _, exists := instance.tests[pkg][name]; exists {

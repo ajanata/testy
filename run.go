@@ -4,8 +4,6 @@ import (
 	"sync"
 	"testing"
 	"time"
-
-	"github.com/gametimesf/testy/orderedmap"
 )
 
 // RunAsTest runs all registered tests under Go's testing framework. To run tests on a per-package basis, put a test
@@ -15,7 +13,7 @@ import (
 // shared between test packages, put them in their own package which does not contain any test definitions.
 func RunAsTest(t *testing.T) {
 	t.Helper()
-	instance.tests.Iterate(func(pkg string, tests orderedmap.OrderedMap[string, testCase]) bool {
+	instance.tests.Iterate(func(pkg string, tests packageTests) bool {
 		tests.Iterate(func(name string, test testCase) bool {
 			t.Run(test.Name, func(tt *testing.T) {
 				tt.Helper()
@@ -31,11 +29,11 @@ func RunAsTest(t *testing.T) {
 //
 // TODO: ability to filter for specific packages and tests
 // TODO: channel for results to support progressive result loading?
-func Run() orderedmap.OrderedMap[string, orderedmap.OrderedMap[string, TestResult]] {
-	results := make(orderedmap.OrderedMap[string, orderedmap.OrderedMap[string, TestResult]])
+func Run() allTestResults {
+	results := make(allTestResults)
 
-	instance.tests.Iterate(func(pkg string, tests orderedmap.OrderedMap[string, testCase]) bool {
-		results[pkg] = make(orderedmap.OrderedMap[string, TestResult])
+	instance.tests.Iterate(func(pkg string, tests packageTests) bool {
+		results[pkg] = make(packageTestResults)
 		tests.Iterate(func(name string, test testCase) bool {
 
 			res := make(chan TestResult)

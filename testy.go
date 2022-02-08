@@ -6,8 +6,13 @@ import (
 	"github.com/gametimesf/testy/orderedmap"
 )
 
+type packageTests = orderedmap.OrderedMap[string, testCase]
+type packageTestResults = orderedmap.OrderedMap[string, TestResult]
+type allTests = orderedmap.OrderedMap[string, packageTests]
+type allTestResults = orderedmap.OrderedMap[string, packageTestResults]
+
 type testy struct {
-	tests orderedmap.OrderedMap[string, orderedmap.OrderedMap[string, testCase]]
+	tests allTests
 }
 
 type testCase struct {
